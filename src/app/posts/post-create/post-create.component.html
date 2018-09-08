@@ -1,0 +1,37 @@
+<!-- <textarea rows="7" [value]="newPost" #postInput></textarea> -->
+<mat-card>
+  <!-- ngForm은 값에 접근 하게 해주고, vaildation도 체크해준다고 한다. -->
+  <!-- required는 aungular문법은 아니다. -->
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
+    <mat-form-field>
+      <!-- <input matInput type="text" [(ngModel)]="enteredTitle"> -->
+      <!-- ngModel은 one way binding 이라고 함 -->
+      <!-- [ngModel]은 양방향인가? -->
+      <input
+        matInput
+        type="text"
+        formControlName="title"
+        placeholder="Title">
+      <mat-error *ngIf="form.get('title').invalid"> Please enter a post title.</mat-error>
+    </mat-form-field>
+    <div>
+      <!-- input은 filePicker를 레퍼런스로 남기고 보이는 것은 css로 감춤처리한다. button은 레펀런스를 참조한다. -->
+      <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Button</button>
+      <input type="file" #filePicker (change)="onImagePicked($event)">
+    </div>
+    <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
+      <img [src]="imagePreview" [alt]="form.value.title">
+      <!-- <mat-error *ngIf="!form.get('image').valid"> 유효하지 않는 이미지 입니다. </mat-error> -->
+    </div>
+    <mat-form-field>
+      <textarea
+        matInput
+        rows="4"
+        formControlName="content"
+        placeholder="content"></textarea>
+      <mat-error *ngIf="form.get('content').invalid"> Please enter a post content.</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Save Post</button>
+  </form>
+</mat-card>
