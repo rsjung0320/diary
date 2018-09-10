@@ -1,6 +1,6 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form fxLayout="column" fxLayoutAlign="center center" (submit)="onSignup(signupForm)" #signupForm="ngForm" *ngIf="!isLoading">
+  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" (submit)="onSignup(f)" #f="ngForm" *ngIf="!isLoading">
     <mat-form-field>
       <input
         matInput
@@ -32,6 +32,6 @@
     </mat-form-field>
 
     <mat-checkbox ngModel name="agree" required color="primary">Agree to Terms and Conditions.</mat-checkbox>
-    <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">Signup</button>
+    <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading" [disabled]="f.invalid">Signup</button>
   </form>
 </mat-card>
