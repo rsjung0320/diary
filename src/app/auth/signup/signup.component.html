@@ -1,6 +1,6 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form (submit)="onSignup(signupForm)" #signupForm="ngForm" *ngIf="!isLoading">
+  <form fxLayout="column" fxLayoutAlign="center center" (submit)="onSignup(signupForm)" #signupForm="ngForm" *ngIf="!isLoading">
     <mat-form-field>
       <input
         matInput
@@ -13,7 +13,7 @@
         email>
       <mat-error *ngIf="emailInput.invalid"> Please enter a valid email.</mat-error>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field hintLabel="Should be at least 6 characters long.">
       <input
         type="password"
         name="password"
@@ -22,6 +22,7 @@
         required
         matInput
         placeholder="Password">
+        <mat-hint align="end"> {{ passwordInput.value?.length }} / 6</mat-hint>
       <mat-error *ngIf="passwordInput.invalid"> Please enter a valid password.</mat-error>
     </mat-form-field>
     <button mat-raised-button color="primary" type="submit" *ngIf="!isLoading">Signup</button>

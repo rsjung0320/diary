@@ -1,7 +1,16 @@
-mat-form-field,
+mat-card {
+  width: 300px;
+  margin: auto;
+}
+
+mat-form-field {
+  width: 300px;
+}
+
+/* mat-form-field,
 textarea {
   width: 100%;
-}
+} */
 
 mat-spinner {
   margin: auto;

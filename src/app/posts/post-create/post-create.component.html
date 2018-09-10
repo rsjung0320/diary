@@ -32,6 +32,11 @@
         placeholder="content"></textarea>
       <mat-error *ngIf="form.get('content').invalid"> Please enter a post content.</mat-error>
     </mat-form-field>
+    <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date" [max]="maxDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
     <button mat-raised-button color="primary" type="submit">Save Post</button>
   </form>
 </mat-card>
