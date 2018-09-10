@@ -18,7 +18,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
   isLoading = false;
   form: FormGroup;
   imagePreview: string;
-  maxDate;
 
   private mode = 'create';
   private postId: string;
@@ -27,8 +26,6 @@ export class PostCreateComponent implements OnInit, OnDestroy {
   constructor(public postsService: PostsService, public route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit() {
-    this.maxDate = new Date();
-    this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe(suthStatus => {

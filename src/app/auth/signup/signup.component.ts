@@ -9,11 +9,16 @@ import { Subscription } from 'rxjs';
 })
 export class SignupComponent implements OnInit, OnDestroy {
   isLoading = false;
+  maxDate;
+
   private authStatusSub: Subscription;
 
   constructor(public authService: AuthService) {}
 
   ngOnInit() {
+    this.maxDate = new Date();
+    this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
+
     this.authStatusSub = this.authService.getAuthStatusListener().subscribe(authStatus => {
       this.isLoading = false;
     });
