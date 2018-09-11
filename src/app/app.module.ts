@@ -15,6 +15,7 @@ import { TrainingComponent } from './training/training.component';
 import { CurrentTrainingComponent } from './training/current-training/current-training.component';
 import { NewTrainingComponent } from './training/new-training/new-training.component';
 import { PostTrainingComponent } from './training/post-training/post-training.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PostTrainingComponent } from './training/post-training/post-training.co
     BrowserAnimationsModule, // angular/material 용
     HttpClientModule,
     AngularMaterialModule,
-    PostsModule
+    PostsModule,
+    FlexLayoutModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
