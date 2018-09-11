@@ -24,7 +24,7 @@ mat-spinner {
 
 :host {
   display: block;
-  margin-top: 5px;
+  margin-top: 4rem;
 }
 
 mat-spinner {
@@ -32,11 +32,10 @@ mat-spinner {
 }
 
 .example-card {
-  max-width: 400px;
+  max-width: 614px;
   margin: auto;
-  margin-bottom: 5px;
+  margin-bottom: 5rem;
   padding-top: 1rem;
-
 }
 
 .example-header-image {

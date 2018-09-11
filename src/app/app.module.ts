@@ -19,6 +19,7 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { PastTrainingComponent } from './training/past-training/past-training.component';
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -40,12 +41,12 @@ import { StopTrainingComponent } from './training/current-training/stop-training
     HttpClientModule,
     AngularMaterialModule,
     PostsModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    FormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
-  ],
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }  ],
   bootstrap: [AppComponent],
   entryComponents: [ErrorComponent, StopTrainingComponent]
 })

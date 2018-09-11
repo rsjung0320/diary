@@ -1,6 +1,6 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="7px" (submit)="onLogin(logindForm)" #logindForm="ngForm" *ngIf="!isLoading">
+  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="7px" (submit)="onLogin(f)" #f="ngForm" *ngIf="!isLoading">
     <mat-form-field>
       <input
         matInput
