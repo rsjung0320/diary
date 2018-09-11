@@ -13,22 +13,25 @@ import { PostsModule } from './posts/posts.module';
 import { TrainingComponent } from './training/training.component';
 import { CurrentTrainingComponent } from './training/current-training/current-training.component';
 import { NewTrainingComponent } from './training/new-training/new-training.component';
-import { PostTrainingComponent } from './training/post-training/post-training.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { HeaderComponent } from './navigation/header/header.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { PastTrainingComponent } from './training/past-training/past-training.component';
+import { StopTrainingComponent } from './training/current-training/stop-training.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ErrorComponent,
+    HeaderComponent,
+    SidenavListComponent,
+    WelcomeComponent,
     TrainingComponent,
     CurrentTrainingComponent,
     NewTrainingComponent,
-    PostTrainingComponent,
-    SidenavListComponent,
-    HeaderComponent,
-    SidenavListComponent
+    PastTrainingComponent,
+    StopTrainingComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +47,6 @@ import { HeaderComponent } from './navigation/header/header.component';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ErrorComponent]
+  entryComponents: [ErrorComponent, StopTrainingComponent]
 })
 export class AppModule { }
