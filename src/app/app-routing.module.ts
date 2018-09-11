@@ -8,9 +8,9 @@ import { TrainingComponent } from './training/training.component';
 
 const routes: Routes = [
   { path: '', component: PostListComponent },
+  { path: 'training', component: TrainingComponent, canActivate: [AuthGuard] },
   { path: 'create', component: PostCreateComponent, canActivate: [AuthGuard] },
   { path: 'edit/:postId', component: PostCreateComponent, canActivate: [AuthGuard] },
-  { path: 'training', component: TrainingComponent, canActivate: [AuthGuard] },
   { path: 'auth', loadChildren: './auth/auth.module#AuthModule' }
 ];
 
