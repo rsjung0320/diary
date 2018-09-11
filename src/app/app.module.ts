@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './auth/auth-interceptor';
 import { ErrorInterceptor } from './error.interceptor';
@@ -16,16 +15,20 @@ import { CurrentTrainingComponent } from './training/current-training/current-tr
 import { NewTrainingComponent } from './training/new-training/new-training.component';
 import { PostTrainingComponent } from './training/post-training/post-training.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import { HeaderComponent } from './navigation/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
     ErrorComponent,
     TrainingComponent,
     CurrentTrainingComponent,
     NewTrainingComponent,
-    PostTrainingComponent
+    PostTrainingComponent,
+    SidenavListComponent,
+    HeaderComponent,
+    SidenavListComponent
   ],
   imports: [
     BrowserModule,
