@@ -13,9 +13,18 @@
       <div><a routerLink="/">LOGO</a></div>
       <div fxFlex fxLayout fxLayoutAlign="flex-end" fxHide.xs>
         <ul fxLayout fxLayoutGap="10px" class="navigation-items">
-          <li><a routerLink="/signup">Signup</a></li>
-          <li><a routerLink="/login">Login</a></li>
-          <li><a routerLink="/training">Training</a></li>
+          <li *ngIf="userIsAuthenticated">
+            <a mat-button routerLink="/create" routerLinkActive="mat-accent">New Post</a>
+          </li>
+          <li *ngIf="!userIsAuthenticated">
+            <a mat-button routerLink="/auth/login" routerLinkActive="mat-accent">Login</a>
+          </li>
+          <li *ngIf="!userIsAuthenticated">
+            <a mat-button routerLink="/auth/signup" routerLinkActive="mat-accent">Signup</a>
+          </li>
+          <li *ngIf="userIsAuthenticated">
+            <button mat-button (click)="onLogout()">Logout</button>
+          </li>
         </ul>
       </div>
     </mat-toolbar>
