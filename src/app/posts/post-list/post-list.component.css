@@ -50,8 +50,13 @@ mat-spinner {
 }
 
 mat-card-header {
-
+  float: left;
 }
+
+.button-st {
+  float: right;
+}
+
 
 mat-card-title {
   margin-top: 3px;

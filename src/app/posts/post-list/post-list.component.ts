@@ -5,6 +5,7 @@ import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
 import { PageEvent } from '@angular/material';
 import { AuthService } from '../../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-list',
@@ -24,7 +25,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   private postsSub: Subscription; // observer와 같다고 생가하면 될 듯.
   private authStstusSub: Subscription;
 
-  constructor(public postsService: PostsService, private authService: AuthService) { }
+  constructor(public postsService: PostsService, private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.isLoading = true;
@@ -61,6 +62,10 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.currentPage = pageData.pageIndex + 1;
     this.postsPerPage = pageData.pageSize;
     this.postsService.getPosts(this.postsPerPage, this.currentPage);
+  }
+
+  onEdit(postId: string) {
+    this.router.navigateByUrl('/edit/' + postId);
   }
 
   onDelete(postId: string) {

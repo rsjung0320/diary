@@ -24,26 +24,24 @@
       <div mat-card-avatar class="example-header-image"></div>
       <mat-card-title>Shiba Inu</mat-card-title>
       <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-      <div fxLayoutAlign="end">
+
+
+    </mat-card-header>
+    <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator">
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
+      </div>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>
+          <button mat-menu-item (click)="onEdit(post.id)">
             <mat-icon>dialpad</mat-icon>
-            <span>Redial</span>
+            <span>Edit</span>
           </button>
-          <button mat-menu-item disabled>
+          <button mat-menu-item color="warn" (click)="onDelete(post.id)">
             <mat-icon>voicemail</mat-icon>
-            <span>Check voicemail</span>
-          </button>
-          <button mat-menu-item>
-            <mat-icon>notifications_off</mat-icon>
-            <span>Disable alerts</span>
+            <span>DELETE</span>
           </button>
         </mat-menu>
-      </div>
-    </mat-card-header>
     <img class="example-image" mat-card-image [src]="post.imagePath" [alt]="post.title">
     <mat-card-content>
       <p>
