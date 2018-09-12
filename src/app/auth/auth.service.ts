@@ -63,7 +63,7 @@ export class AuthService {
           this.router.navigate(['/']);
         }
       }, err => {
-        this.authStatusListener.next(true);
+        this.authStatusListener.next(false);
       });
   }
 
