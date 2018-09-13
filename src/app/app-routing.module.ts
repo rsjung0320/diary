@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'training', component: TrainingComponent, canActivate: [AuthGuard] },
   { path: 'create', component: PostCreateComponent, canActivate: [AuthGuard] },
   { path: 'edit/:postId', component: PostCreateComponent, canActivate: [AuthGuard] },
-  { path: 'auth', loadChildren: './auth/auth.module#AuthModule' }
+  { path: 'auth', loadChildren: './auth/auth.module#AuthModule' } // lazy loading 방법
 ];
 
 @NgModule({
