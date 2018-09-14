@@ -34,7 +34,8 @@ mat-spinner {
 .example-card {
   max-width: 614px;
   margin: auto;
-  margin-bottom: 5rem;
+  /* margin-bottom: 5rem; */
+  margin-bottom: 1rem;
   padding-top: 1rem;
 }
 
