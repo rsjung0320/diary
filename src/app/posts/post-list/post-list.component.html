@@ -8,7 +8,9 @@
       <mat-card-title>Shiba Inu</mat-card-title>
       <mat-card-subtitle>Dog Breed</mat-card-subtitle>
     </mat-card-header>
-    <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator">
+    <div class="button-st" *ngIf="userId === post.creator">
+    <!-- TODO -->
+    <!-- <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator"> -->
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>

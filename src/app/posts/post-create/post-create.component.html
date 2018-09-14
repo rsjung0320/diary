@@ -21,6 +21,8 @@
       <input type="file" #filePicker (change)="onImagePicked($event)">
     </div>
     <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
+      <div>{{ uploadPercent | async }}</div>
+      <!-- <a [href]="downloadURL | async">{{ downloadURL | async }}</a> -->
       <img [src]="imagePreview" [alt]="form.value.title">
       <!-- <mat-error *ngIf="!form.get('image').valid"> 유효하지 않는 이미지 입니다. </mat-error> -->
     </div>

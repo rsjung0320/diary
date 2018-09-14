@@ -19,6 +19,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { reducers } from './app.reducer';
 import { AuthModule } from './auth/auth.module';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AuthModule,
     PostsModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     StoreModule.forRoot(reducers),
   ],
   providers: [

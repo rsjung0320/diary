@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { Post } from './post.model';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
 
 import * as postAction from './post.actions';
 import * as fromPost from './post.reducer';
@@ -20,9 +21,11 @@ export class PostsService {
   // 이러한 방식이 외부에서 접근이 되지 않고, javascript의 외부에서 접근 못하게 막으며, 본래의 posts의 변수는 건들 수 없다고 한다.
   private posts: Post[] = [];
   private postsUpdated = new Subject<{posts: Post[], postCount: number}>(); // subject는 observable과 같다고 생각하면 된다.
+  uploadProgress;
 
   constructor(
     private db: AngularFirestore,
+    private afStorage: AngularFireStorage,
     private http: HttpClient,
     private router: Router,
     private store: Store<fromPost.State>) { }
@@ -80,12 +83,26 @@ export class PostsService {
     // );
   }
 
-  addPost(title: string, content: string, image: File) {
-    console.log('addPost');
+  uploadImage(file: File) {
+    const randomId = Math.random().toString(36).substring(2);
+    const ref = this.afStorage.ref(randomId);
+    let task = ref.put(file);
+    this.uploadProgress = task.percentageChanges();
+    const downloadURL = task.snapshotChanges().subscribe(res => {
+      console.log('res : ', res);
+      
+    });
+    console.log('downloadURL :', downloadURL);
+    
+  }
+
+  addPost(title: string, content: string, image: string) {
+    console.log('image :', image);
 
     const postData = {
       title: title,
-      content: content
+      content: content,
+      imagePath: image
     };
 
     this.db.collection('posts').add(postData).then(post => {
