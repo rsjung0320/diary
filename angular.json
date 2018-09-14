@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "mean-course": {
+    "ng-daily": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/mean-course",
+            "outputPath": "dist/ng-daily",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -53,18 +53,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "mean-course:build"
+            "browserTarget": "ng-daily:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "mean-course:build:production"
+              "browserTarget": "ng-daily:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "mean-course:build"
+            "browserTarget": "ng-daily:build"
           }
         },
         "test": {
@@ -101,7 +101,7 @@
         }
       }
     },
-    "mean-course-e2e": {
+    "ng-daily-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -109,11 +109,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "mean-course:serve"
+            "devServerTarget": "ng-daily:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "mean-course:serve:production"
+              "devServerTarget": "ng-daily:serve:production"
             }
           }
         },
@@ -129,5 +129,5 @@
       }
     }
   },
-  "defaultProject": "mean-course"
+  "defaultProject": "ng-daily"
 }

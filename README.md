@@ -16,3 +16,9 @@ Angular 6부터는 npm install --save @angular/material 만 실행하면 된다.
 3. update @angular/flex-layout version to "^6.0.0-beta.18"
 4. npm install
 5. npm run build:ssr
+
+#deploy
+npm i -g firebase-tools
+firebase login => 화면에서 로그인하기
+firebase init
+firebase deploy

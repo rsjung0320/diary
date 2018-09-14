@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { PostCreateComponent } from './post-create/post-create.component';
 import { PostListComponent } from './post-list/post-list.component';
 import { AngularMaterialModule } from '../angular-material.module';
+import { StoreModule } from '@ngrx/store';
+import { postReducer } from './post.reducer';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,8 @@ import { AngularMaterialModule } from '../angular-material.module';
     CommonModule,
     ReactiveFormsModule,
     AngularMaterialModule,
-    RouterModule
+    RouterModule,
+    StoreModule.forFeature('post', postReducer)
   ]
 })
 export class PostsModule {}

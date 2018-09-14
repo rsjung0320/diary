@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "public": "dist/ng-daily", // 이게 중요
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+      "source": "/public/**",
+      "destination": "/public.html"
+    },
+    {
+      "source": "**",
+      "destination": "/index.html"
+    }]
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

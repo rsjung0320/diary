@@ -1,24 +1,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Post } from './post.model';
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/firestore';
 
-// const BACKEND_URL = environment.apiUrl + '/posts/';
+import * as postAction from './post.actions';
+import * as fromPost from './post.reducer';
+import { Store } from '@ngrx/store';
 
 // 아래 @Injectable({providedIn: 'root'}) 을 안쓰려면 app.module.ts에 providers에 추가 해야 함
 @Injectable({ providedIn: 'root' })
 export class PostsService {
+  private fbSubs: Subscription[] = [];
+
   // 이러한 방식이 외부에서 접근이 되지 않고, javascript의 외부에서 접근 못하게 막으며, 본래의 posts의 변수는 건들 수 없다고 한다.
   private posts: Post[] = [];
   private postsUpdated = new Subject<{posts: Post[], postCount: number}>(); // subject는 observable과 같다고 생각하면 된다.
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private db: AngularFirestore,
+    private http: HttpClient,
+    private router: Router,
+    private store: Store<fromPost.State>) { }
 
-  getPosts(postsPerPage: number, currentPage: number) {
+  // getPosts(postsPerPage: number, currentPage: number) {
+  getPosts() {
+    this.fbSubs.push(
+      this.db
+        .collection('posts')
+        .valueChanges()
+        .subscribe((posts: Post[]) => {
+          console.log('getPosts :', posts);
+
+          this.store.dispatch(new postAction.SetPost(posts));
+        })
+    );
+
     // const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
     // this.http
     //   .get<{ message: string, posts: any, maxPosts: number }>(
@@ -60,10 +81,17 @@ export class PostsService {
   }
 
   addPost(title: string, content: string, image: File) {
-    // const postData = new FormData();
-    // postData.append('title', title);
-    // postData.append('content', content);
-    // postData.append('image', image, title);
+    console.log('addPost');
+
+    const postData = {
+      title: title,
+      content: content
+    };
+
+    this.db.collection('posts').add(postData).then(post => {
+      console.log(post);
+      this.router.navigate(['/']);
+    });
 
     // this.http
     //   .post<{ message: string, post: Post }>(

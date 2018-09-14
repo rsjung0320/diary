@@ -1,11 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { Post } from '../post.model';
 import { PostsService } from '../posts.service';
 import { PageEvent } from '@angular/material';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+
+import * as fromRoot from '../../app.reducer';
+
+import * as postAction from '../post.actions';
+import * as fromPost from '../post.reducer';
 
 @Component({
   selector: 'app-post-list',
@@ -13,8 +19,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  posts: Post[] = []; // post-create에서 @Output 한 것을 상위 app.component를 걸쳐서 받는다.
-  isLoading = false;
+  posts$: Observable<Post[]>; // post-create에서 @Output 한 것을 상위 app.component를 걸쳐서 받는다.
+  isLoading$: Observable<boolean>;
   totalPosts = 10;
   postsPerPage = 5;
   currentPage = 1;
@@ -22,19 +28,25 @@ export class PostListComponent implements OnInit, OnDestroy {
   userIsAuthenticated = false;
   userId: string;
 
-  private postsSub: Subscription; // observer와 같다고 생가하면 될 듯.
-  private authStstusSub: Subscription;
-
-  constructor(public postsService: PostsService, private authService: AuthService, private router: Router) { }
+  constructor(
+    public postsService: PostsService,
+    private authService: AuthService,
+    private router: Router,
+    private store: Store<fromRoot.State>
+  ) { }
 
   ngOnInit() {
-    // this.isLoading = true;
-    // this.postsService.getPosts(this.postsPerPage, this.currentPage);
+
+    this.isLoading$ = this.store.select(fromRoot.getIsLoading);
+
+    this.posts$ = this.store.select(fromPost.getPosts);
+    this.postsService.getPosts();
+
     // this.userId = this.authService.getUserId();
-    // // 리스트이기 때문에 Observer가 되야 한다. 상황이 변경이 되면 첫번째, param에서 해당 내역을 처리하고, 두번째 param에서는 error를 세번째 param에는 완료 후 처리 로직이 들어간다.
+    // 리스트이기 때문에 Observer가 되야 한다. 상황이 변경이 되면 첫번째, param에서 해당 내역을 처리하고, 두번째 param에서는 error를 세번째 param에는 완료 후 처리 로직이 들어간다.
     // this.postsSub = this.postsService
     //   .getPostUpdateListener()
-    //   .subscribe((postData: {posts: Post[], postCount: number}) => {
+    //   .subscribe((postData: { posts: Post[], postCount: number }) => {
     //     // 200: Success
     //     this.isLoading = false;
     //     this.totalPosts = postData.postCount;
