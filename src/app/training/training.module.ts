@@ -9,8 +9,6 @@ import { StopTrainingComponent } from './current-training/stop-training.componen
 import { SharedModule } from '../shared/shared.module';
 import { TrainingRoutingModule } from './training-routing.module';
 import { trainingReducer } from './training.reducer';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -21,9 +19,6 @@ import { CommonModule } from '@angular/common';
     StopTrainingComponent
   ],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
     SharedModule,
     TrainingRoutingModule,
     StoreModule.forFeature('training', trainingReducer)
