@@ -9,8 +9,7 @@ import * as fromRoot from '../app.reducer';
 import * as UI from '../shared/ui.actions';
 import * as Auth from './auth.actions';
 import { Store } from '@ngrx/store';
-import * as AuthReducer from './auth.reducer';
-import { take, map } from 'rxjs/operators';
+import { PostsService } from '../posts/posts.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -18,6 +17,7 @@ export class AuthService {
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
+    private postService: PostsService,
     private trainingService: TrainingService,
     private uiService: UIService,
     private store: Store<fromRoot.State>
@@ -30,6 +30,7 @@ export class AuthService {
         this.router.navigate(['/']);
       } else {
         this.trainingService.cancelSubscriptions();
+        this.postService.cancelSubscriptions();
         this.store.dispatch(new Auth.SetUnauthenticated());
         this.router.navigate(['/login']);
       }
@@ -43,9 +44,9 @@ export class AuthService {
       .then(result => {
         this.store.dispatch(new UI.StopLoading());
       })
-      .catch(error => {
+      .catch(err => {
         this.store.dispatch(new UI.StopLoading());
-        this.uiService.showSnackbar(error.message, null, 3000);
+        this.uiService.showSnackbar(err.message, null, 3000);
       });
   }
 
@@ -56,9 +57,9 @@ export class AuthService {
       .then(result => {
         this.store.dispatch(new UI.StopLoading());
       })
-      .catch(error => {
+      .catch(err => {
         this.store.dispatch(new UI.StopLoading());
-        this.uiService.showSnackbar(error.message, null, 3000);
+        this.uiService.showSnackbar(err.message, null, 3000);
       });
   }
 

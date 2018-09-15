@@ -103,6 +103,8 @@ export class TrainingService {
   }
 
   private addDataToDatabase(exercise: Exercise) {
+    console.log('exercise :', exercise);
+
     this.db.collection('finishedExercises').add(exercise);
   }
 }

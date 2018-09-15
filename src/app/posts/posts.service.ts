@@ -1,17 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
 import { Post } from './post.model';
 import { Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { Store } from '@ngrx/store';
 
 import * as postAction from './post.actions';
 import * as fromPost from './post.reducer';
-import { Store } from '@ngrx/store';
+import * as UI from '../shared/ui.actions';
+import { UIService } from '../shared/ui.service';
+import { take } from 'rxjs/operators';
 
 // 아래 @Injectable({providedIn: 'root'}) 을 안쓰려면 app.module.ts에 providers에 추가 해야 함
 @Injectable({ providedIn: 'root' })
@@ -20,7 +21,7 @@ export class PostsService {
 
   // 이러한 방식이 외부에서 접근이 되지 않고, javascript의 외부에서 접근 못하게 막으며, 본래의 posts의 변수는 건들 수 없다고 한다.
   private posts: Post[] = [];
-  private postsUpdated = new Subject<{posts: Post[], postCount: number}>(); // subject는 observable과 같다고 생각하면 된다.
+  private postsUpdated = new Subject<{ posts: Post[], postCount: number }>(); // subject는 observable과 같다고 생각하면 된다.
   uploadProgress;
 
   constructor(
@@ -28,7 +29,9 @@ export class PostsService {
     private afStorage: AngularFireStorage,
     private http: HttpClient,
     private router: Router,
-    private store: Store<fromPost.State>) { }
+    private store: Store<fromPost.State>,
+    private uiService: UIService
+  ) { }
 
   // getPosts(postsPerPage: number, currentPage: number) {
   getPosts() {
@@ -37,7 +40,7 @@ export class PostsService {
         .collection('posts')
         .valueChanges()
         .subscribe((posts: Post[]) => {
-          console.log('getPosts :', posts);
+          console.log(posts);
 
           this.store.dispatch(new postAction.SetPost(posts));
         })
@@ -86,39 +89,31 @@ export class PostsService {
   uploadImage(file: File) {
     const randomId = Math.random().toString(36).substring(2);
     const ref = this.afStorage.ref(randomId);
-    let task = ref.put(file);
+    const task = ref.put(file);
     this.uploadProgress = task.percentageChanges();
     const downloadURL = task.snapshotChanges().subscribe(res => {
       console.log('res : ', res);
-      
+
     });
     console.log('downloadURL :', downloadURL);
-    
+
   }
 
   addPost(title: string, content: string, image: string) {
-    console.log('image :', image);
-
     const postData = {
       title: title,
       content: content,
       imagePath: image
     };
 
-    this.db.collection('posts').add(postData).then(post => {
-      console.log(post);
-      this.router.navigate(['/']);
+    this.store.select(fromPost.getPosts).pipe(take(1)).subscribe(post => {
+      console.log('post :', post);
+      this.db.collection('posts').add(postData)
+      .then(res => {
+        console.log('res :', res);
+        this.router.navigate(['/']);
+      });
     });
-
-    // this.http
-    //   .post<{ message: string, post: Post }>(
-    //     BACKEND_URL,
-    //     postData
-    //   )
-    //   .subscribe((responseData) => {
-
-    //     this.router.navigate(['/']);
-    //   });
   }
 
 
@@ -149,6 +144,22 @@ export class PostsService {
   }
 
   deletePost(postId: string) {
-    // return this.http.delete(BACKEND_URL + postId);
+    this.store.dispatch(new UI.StartLoading());
+    console.log('postId :', postId);
+
+    const postRef = this.db.collection('posts').doc(postId);
+    // postRef.update({
+    //   id: firebase.firestore.FieldValue.delete()
+    // }).then(post => {
+    //   this.store.dispatch(new UI.StopLoading());
+    //   this.router.navigate(['/']);
+    // }).catch(err => {
+    //   this.store.dispatch(new UI.StopLoading());
+    //   this.uiService.showSnackbar(err.message, null, 3000);
+    // });
+  }
+
+  cancelSubscriptions() {
+    this.fbSubs.forEach(sub => sub.unsubscribe());
   }
 }

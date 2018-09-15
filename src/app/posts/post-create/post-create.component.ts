@@ -31,8 +31,8 @@ export class PostCreateComponent implements OnInit {
 
   constructor(
     private storage: AngularFireStorage,
-    public postsService: PostsService, 
-    public route: ActivatedRoute, 
+    public postsService: PostsService,
+    public route: ActivatedRoute,
     private authService: AuthService) {}
 
   ngOnInit() {
@@ -88,7 +88,7 @@ export class PostCreateComponent implements OnInit {
     // this.postsService.uploadImage(file);
     const randomId = Math.random().toString(36).substring(2);
     const filePath = 'SkinImages/' + randomId;
-    
+
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
 
@@ -105,7 +105,7 @@ export class PostCreateComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview = reader.result.toString();
-      
+
     };
     reader.readAsDataURL(file);
   }
@@ -118,8 +118,6 @@ export class PostCreateComponent implements OnInit {
     // }
     this.isLoading = true; // 어짜피 다른곳에 갔다가 다시 이 화면이 불려지면 false로 변경되기 때문에 아래에 false로 명시적으로 넣지 않는다.
     if (this.mode === 'create') {
-      console.log('this.form.value.image :', this.form.value.image);
-      
       this.postsService.addPost(this.form.value.title, this.form.value.content, this.downloadURLString);
     } else {
       this.postsService.updatePost(
