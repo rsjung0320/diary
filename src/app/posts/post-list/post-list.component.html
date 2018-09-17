@@ -9,22 +9,22 @@
       <mat-card-subtitle>Dog Breed</mat-card-subtitle>
     </mat-card-header>
     <div class="button-st" *ngIf="userId === post.creator">
-    <!-- TODO -->
-    <!-- <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator"> -->
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-      </div>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onEdit(post.id)">
-            <mat-icon>dialpad</mat-icon>
-            <span>Edit</span>
-          </button>
-          <button mat-menu-item color="warn" (click)="onDelete(post)">
-            <mat-icon>voicemail</mat-icon>
-            <span>DELETE</span>
-          </button>
-        </mat-menu>
+      <!-- TODO -->
+      <!-- <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator"> -->
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onEdit(post.id)">
+        <mat-icon>dialpad</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-menu-item color="warn" (click)="onDelete(post)">
+        <mat-icon>voicemail</mat-icon>
+        <span>DELETE</span>
+      </button>
+    </mat-menu>
     <img class="example-image" mat-card-image [src]="post.imagePath" [alt]="post.title">
     <mat-card-content>
       <p>

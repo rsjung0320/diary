@@ -5,3 +5,5 @@ export interface Post {
   imagePath: string;
   creator: string;
 }
+
+export interface PostId extends Post { id: string; }
