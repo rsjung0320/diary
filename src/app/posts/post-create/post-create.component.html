@@ -2,8 +2,8 @@
 <mat-card>
   <!-- ngForm은 값에 접근 하게 해주고, vaildation도 체크해준다고 한다. -->
   <!-- required는 aungular문법은 아니다. -->
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!isLoading">
+  <mat-spinner *ngIf="isLoading$ | async"></mat-spinner>
+  <form [formGroup]="form" (submit)="onSavePost()" *ngIf="!(isLoading$ | async)">
     <mat-form-field>
       <!-- <input matInput type="text" [(ngModel)]="enteredTitle"> -->
       <!-- ngModel은 one way binding 이라고 함 -->

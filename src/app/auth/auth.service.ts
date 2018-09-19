@@ -10,9 +10,12 @@ import * as UI from '../shared/ui.actions';
 import * as Auth from './auth.actions';
 import { Store } from '@ngrx/store';
 import { PostsService } from '../posts/posts.service';
+import { UserData } from './user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
+  userData: UserData;
 
   constructor(
     private router: Router,
@@ -26,9 +29,18 @@ export class AuthService {
   initAuthListener() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
+        this.userData = {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          photoURL: user.photoURL
+        };
+
         this.store.dispatch(new Auth.SetAuthenticated());
         this.router.navigate(['/']);
       } else {
+        this.userData = null;
         this.trainingService.cancelSubscriptions();
         this.postService.cancelSubscriptions();
         this.store.dispatch(new Auth.SetUnauthenticated());
@@ -37,11 +49,16 @@ export class AuthService {
     });
   }
 
+  getUser() {
+    return this.userData;
+  }
+
   registerUser(authData: AuthData) {
     this.store.dispatch(new UI.StartLoading());
     this.afAuth.auth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
+        // 알아서 AppCompononet가 다시 불리면서 initAuthListener()를 호출한다.
         this.store.dispatch(new UI.StopLoading());
       })
       .catch(err => {
@@ -55,6 +72,8 @@ export class AuthService {
     this.afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
+
+
         this.store.dispatch(new UI.StopLoading());
       })
       .catch(err => {

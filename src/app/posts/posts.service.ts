@@ -12,7 +12,9 @@ import * as postAction from './post.actions';
 import * as fromPost from './post.reducer';
 import * as UI from '../shared/ui.actions';
 import { UIService } from '../shared/ui.service';
-import { take, map } from 'rxjs/operators';
+import { take, map, finalize } from 'rxjs/operators';
+import { UserData } from '../auth/user.model';
+import { Image } from './image.model';
 
 // 아래 @Injectable({providedIn: 'root'}) 을 안쓰려면 app.module.ts에 providers에 추가 해야 함
 @Injectable({ providedIn: 'root' })
@@ -36,43 +38,30 @@ export class PostsService {
     private store: Store<fromPost.State>,
     private uiService: UIService
   ) {
-    this.postsCollection = afs.collection<Post>('posts');
+    this.postsCollection = afs.collection('posts');
   }
 
   // getPosts(postsPerPage: number, currentPage: number) {
   getPosts() {
-    this.postsCollection.snapshotChanges().pipe(
-      map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as Post;
-        const id = a.payload.doc.id;
-
-
-        return { id, ...data };
-      }))
-    ).subscribe(res => {
-      console.log(res);
-      this.store.dispatch(new postAction.SetPost(res));
-    });
-
+    this.store.dispatch(new UI.StartLoading());
     this.fbSubs.push(
-      // this.db
-      //   .collection('posts')
-      //   .valueChanges()
-      //   .subscribe((posts: Post[]) => {
-      //     console.log(posts);
+      this.postsCollection.snapshotChanges().pipe(
+        map(actions => {
+          return actions.map(a => {
+            const data = a.payload.doc.data() as Post;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        })
+      ).subscribe(res => {
+        console.log('getPosts :', res);
 
-      //     this.store.dispatch(new postAction.SetPost(posts));
-      //   })
-
-      // this.posts = this.postsCollection.snapshotChanges().pipe(
-      //   map(actions => actions.map(a => {
-      //     const data = a.payload.doc.data() as Shirt;
-      //     const id = a.payload.doc.id;
-      //     return { id, ...data };
-      //   }))
-      // );
-
-
+        this.store.dispatch(new UI.StopLoading());
+        this.store.dispatch(new postAction.SetPost(res));
+      }, err => {
+        this.store.dispatch(new UI.StopLoading());
+        console.log(err);
+      })
     );
 
     // const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
@@ -115,29 +104,12 @@ export class PostsService {
     // );
   }
 
-  uploadImage(file: File) {
-    const randomId = Math.random().toString(36).substring(2);
-    const ref = this.afStorage.ref(randomId);
-    const task = ref.put(file);
-    this.uploadProgress = task.percentageChanges();
-    const downloadURL = task.snapshotChanges().subscribe(res => {
-    });
-  }
-
-  addPost(title: string, content: string, imagePath: string) {
+  addPost(user: UserData, title: string, content: string, image: Image) {
     this.store.dispatch(new UI.StartLoading());
     this.store.select(fromPost.getPosts).pipe(take(1))
       .subscribe(post => {
-        // const id = this.afs.createId();
-        const postData = { title, content, imagePath };
-        // this.afs.collection('posts').doc(id).set(postData)
-        //   .then(res => {
-        //     this.store.dispatch(new UI.StopLoading());
-        //     this.router.navigate(['/']);
-        //   }).catch(err => {
-        //     this.store.dispatch(new UI.StopLoading());
-        //     console.error('err :', err);
-        //   });
+        const postData = { title, date: new Date(), content, image, user };
+        // this.afs.collection('posts').doc(uid).collection('post').add(postData);
         this.afs.collection('posts').add(postData)
           .then(res => {
             this.store.dispatch(new UI.StopLoading());
@@ -149,6 +121,17 @@ export class PostsService {
       });
   }
 
+  deletePost(postId: string) {
+    // TODO 사진도 찾아서 지운다.
+
+    this.store.dispatch(new UI.StartLoading());
+
+    this.afs.collection('posts').doc(postId).delete().then(res => {
+      this.store.dispatch(new UI.StopLoading());
+    }).catch(err => {
+      this.store.dispatch(new UI.StopLoading());
+    });
+  }
 
   updatePost(id: string, title: string, content: string, image: File | string) {
     // let postData: Post | FormData;
@@ -174,17 +157,6 @@ export class PostsService {
 
     //     this.router.navigate(['/']);
     //   });
-  }
-
-  deletePost(postId: string) {
-    // TODO 사진도 찾아서 지운다.
-    this.store.dispatch(new UI.StartLoading());
-
-    const postRef = this.afs.collection('posts').doc(postId).delete().then(res => {
-      this.store.dispatch(new UI.StopLoading());
-    }).catch(err => {
-      this.store.dispatch(new UI.StopLoading());
-    });
   }
 
   cancelSubscriptions() {

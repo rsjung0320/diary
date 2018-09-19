@@ -8,6 +8,10 @@ import { mimeType } from './mime-type.validator';
 import { AuthService } from '../../auth/auth.service';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { finalize } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+
+import * as fromRoot from '../../app.reducer';
+import { Image } from '../image.model';
 
 @Component({
   selector: 'app-post-create',
@@ -17,13 +21,14 @@ import { finalize } from 'rxjs/operators';
 
 export class PostCreateComponent implements OnInit {
   post: Post;
-  isLoading = false;
+  isLoading$: Observable<boolean>;
   form: FormGroup;
   imagePreview: string;
+  image: Image = <any>{};
 
   uploadPercent: Observable<number>;
   downloadURL: Observable<string>;
-  downloadURLString: string;
+  // downloadURLString: string;
 
   private mode = 'create';
   private postId: string;
@@ -33,9 +38,13 @@ export class PostCreateComponent implements OnInit {
     private storage: AngularFireStorage,
     public postsService: PostsService,
     public route: ActivatedRoute,
-    private authService: AuthService) {}
+    private authService: AuthService,
+    private store: Store<fromRoot.State>
+    ) {}
 
   ngOnInit() {
+    this.isLoading$ = this.store.select(fromRoot.getIsLoading);
+
     this.form = new FormGroup({
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
@@ -54,10 +63,11 @@ export class PostCreateComponent implements OnInit {
       if (paramMap.has('postId')) {
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
-        this.isLoading = true;
+
 
         // TODO
 
+        // this.isLoading = true;
         // this.postsService.getPost(this.postId).subscribe(postData => {
         //   this.isLoading = false;
         //   this.post = {
@@ -85,22 +95,32 @@ export class PostCreateComponent implements OnInit {
     this.form.patchValue({image: file}); // formGroup의 value에 넣기 위함이다.
     this.form.get('image').updateValueAndValidity(); // 실제 updateValueAndValidity를 해야 formGroup의 value에 값이 들어간다.
 
-    // this.postsService.uploadImage(file);
     const randomId = Math.random().toString(36).substring(2);
     const filePath = 'SkinImages/' + randomId;
 
     const fileRef = this.storage.ref(filePath);
-    const task = this.storage.upload(filePath, file);
+    const user = this.authService.getUser();
+    const task = fileRef.put(file, { customMetadata: { userId: user.uid, email: user.email } });
 
     // observe percentage changes
     this.uploadPercent = task.percentageChanges();
     // get notified when the download URL is available
     task.snapshotChanges().pipe(
       finalize(() => {
-        this.downloadURL = fileRef.getDownloadURL();
-        fileRef.getDownloadURL().subscribe(res => this.downloadURLString = res);
+        fileRef.getMetadata().subscribe(res => {
+          console.log('res :', res);
+          this.image.path = res.fullPath;
+          this.image.meta = res.customMetadata;
+          this.image.uid = res.customMetadata.userId;
+        });
+        fileRef.getDownloadURL().subscribe(res => {
+          this.image.url = res;
+        });
       })
-    ).subscribe();
+    ).subscribe(res => {
+    }, err => {}
+    , () => {
+    });
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -116,9 +136,9 @@ export class PostCreateComponent implements OnInit {
     //   console.log('2');
     //   return;
     // }
-    this.isLoading = true; // 어짜피 다른곳에 갔다가 다시 이 화면이 불려지면 false로 변경되기 때문에 아래에 false로 명시적으로 넣지 않는다.
+    // this.isLoading = true; // 어짜피 다른곳에 갔다가 다시 이 화면이 불려지면 false로 변경되기 때문에 아래에 false로 명시적으로 넣지 않는다.
     if (this.mode === 'create') {
-      this.postsService.addPost(this.form.value.title, this.form.value.content, this.downloadURLString);
+      this.postsService.addPost(this.authService.getUser(), this.form.value.title, this.form.value.content, this.image);
     } else {
       this.postsService.updatePost(
         this.postId,
@@ -127,7 +147,7 @@ export class PostCreateComponent implements OnInit {
         this.form.value.image
       );
     }
-    this.form.reset();
+    // this.form.reset();
   }
 
 }
