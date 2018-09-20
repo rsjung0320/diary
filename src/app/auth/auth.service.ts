@@ -11,6 +11,8 @@ import * as Auth from './auth.actions';
 import { Store } from '@ngrx/store';
 import { PostsService } from '../posts/posts.service';
 import { UserData } from './user.model';
+import * as firebase from 'firebase';
+import { AngularFirestoreDocument, AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,6 +22,7 @@ export class AuthService {
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
     private postService: PostsService,
     private trainingService: TrainingService,
     private uiService: UIService,
@@ -28,6 +31,8 @@ export class AuthService {
 
   initAuthListener() {
     this.afAuth.authState.subscribe(user => {
+      console.log('user :', user);
+
       if (user) {
         this.userData = {
           uid: user.uid,
@@ -67,13 +72,39 @@ export class AuthService {
       });
   }
 
+  googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    return this.oAuthLogin(provider);
+  }
+
+  private oAuthLogin(provider) {
+    return this.afAuth.auth.signInWithPopup(provider)
+      .then( (credential) => {
+        this.updateUserData(credential.user);
+      });
+  }
+
+  private updateUserData(user) {
+    // sets user data to firestore on login
+    const userRef: AngularFirestoreDocument<UserData> = this.afs.doc(`users/${user.uid}`);
+
+    const data: UserData = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      phoneNumber: user.phoneNumber,
+      photoURL: user.photoURL
+    };
+
+    return userRef.set(data);
+  }
+
   login(authData: AuthData) {
     this.store.dispatch(new UI.StartLoading());
     this.afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
-      .then(result => {
-
-
+      .then(credential => {
+        this.updateUserData(credential.user);
         this.store.dispatch(new UI.StopLoading());
       })
       .catch(err => {

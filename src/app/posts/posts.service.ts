@@ -15,6 +15,8 @@ import { UIService } from '../shared/ui.service';
 import { take, map, finalize } from 'rxjs/operators';
 import { UserData } from '../auth/user.model';
 import { Image } from './image.model';
+import { getViewData } from '@angular/core/src/render3/instructions';
+import { DateData } from './date.model';
 
 // 아래 @Injectable({providedIn: 'root'}) 을 안쓰려면 app.module.ts에 providers에 추가 해야 함
 @Injectable({ providedIn: 'root' })
@@ -55,7 +57,6 @@ export class PostsService {
         })
       ).subscribe(res => {
         console.log('getPosts :', res);
-
         this.store.dispatch(new UI.StopLoading());
         this.store.dispatch(new postAction.SetPost(res));
       }, err => {
@@ -108,7 +109,10 @@ export class PostsService {
     this.store.dispatch(new UI.StartLoading());
     this.store.select(fromPost.getPosts).pipe(take(1))
       .subscribe(post => {
-        const postData = { title, date: new Date(), content, image, user };
+        const dateData = this.createDate(user);
+        console.log('date :', dateData);
+
+        const postData = { title, date: dateData, content, image, user };
         // this.afs.collection('posts').doc(uid).collection('post').add(postData);
         this.afs.collection('posts').add(postData)
           .then(res => {
@@ -121,13 +125,23 @@ export class PostsService {
       });
   }
 
-  deletePost(postId: string) {
-    // TODO 사진도 찾아서 지운다.
+  createDate(user: UserData) {
+    const dateDate: DateData = <any>{};
 
+    dateDate.createdAt = Date.now().toString();
+    dateDate.createdAtUid = user.uid;
+    dateDate.lastUpdated = Date.now().toString();
+    dateDate.lastUpdatedUid = user.uid;
+
+    return dateDate;
+  }
+
+  deletePost(post: Post) {
     this.store.dispatch(new UI.StartLoading());
 
-    this.afs.collection('posts').doc(postId).delete().then(res => {
+    this.afs.collection('posts').doc(post.id).delete().then(res => {
       this.store.dispatch(new UI.StopLoading());
+      this.afStorage.ref(post.image.path).delete();
     }).catch(err => {
       this.store.dispatch(new UI.StopLoading());
     });

@@ -69,6 +69,24 @@ export class PostListComponent implements OnInit, OnDestroy {
     //   });
   }
 
+  setImage(imageUrl: string) {
+    let styles: Object;
+
+    if (imageUrl !== null && imageUrl !== undefined) {
+      styles = {
+        'background-image': `url('${imageUrl}')`,
+        'background-size': 'cover'
+      };
+    } else {
+      styles = {
+        'background-image': `url('https://material.angular.io/assets/img/examples/shiba1.jpg')`,
+        'background-size': 'cover'
+      };
+    }
+
+    return styles;
+  }
+
   onChangePage(pageData: PageEvent) {
     // this.isLoading = true;
     // this.currentPage = pageData.pageIndex + 1;
@@ -80,16 +98,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     // this.router.navigateByUrl('/edit/' + postId);
   }
 
-  onDelete(postId: Post) {
-    // this.isLoading$ = this.store.select(fromRoot.getIsLoading);
-    console.log('onDelete :', postId);
-
-    this.postsService.deletePost(postId.id);
-    // this.postsService.deletePost(postId);.subscribe(() => {
-    //   this.postsService.getPosts(this.postsPerPage, this.currentPage);
-    // }, () => {
-    //   this.isLoading = false;
-    // });
+  onDelete(post: Post) {
+    this.postsService.deletePost(post);
   }
 
   ngOnDestroy() {

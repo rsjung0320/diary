@@ -4,11 +4,12 @@
 <section *ngIf="!(isLoading$ | async)">
   <mat-card class="example-card" fxFlex.xs="100%" *ngFor="let post of posts$ | async">
     <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Shiba Inu</mat-card-title>
-      <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+      <!-- <div mat-card-avatar class="example-header-image"></div> -->
+      <div mat-card-avatar [ngStyle]="setImage(post.user.photoURL)"></div>
+      <mat-card-title>{{post.user.displayName ? post.user.displayName : post.user.email}}</mat-card-title>
+      <mat-card-subtitle>{{post.date.lastUpdated | date: 'dd/MM/yy'}}</mat-card-subtitle>
     </mat-card-header>
-    <div class="button-st" *ngIf="userId === post.creator">
+    <div class="button-st" *ngIf="userId === post.user.uid">
       <!-- TODO -->
       <!-- <div class="button-st" *ngIf="userIsAuthenticated && userId === post.creator"> -->
       <button mat-icon-button [matMenuTriggerFor]="menu">

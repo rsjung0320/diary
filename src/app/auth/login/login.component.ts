@@ -31,6 +31,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  onGoogleLogin() {
+    this.authService.googleLogin();
+  }
+
   onSubmit() {
     this.authService.login({
       email: this.loginForm.value.email,

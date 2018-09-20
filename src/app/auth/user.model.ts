@@ -1,7 +1,7 @@
 export interface UserData {
   uid: string;
-  displayName: string;
+  displayName?: string;
   email: string;
-  phoneNumber: string;
-  photoURL: string;
+  phoneNumber?: string;
+  photoURL?: string;
 }

@@ -108,7 +108,6 @@ export class PostCreateComponent implements OnInit {
     task.snapshotChanges().pipe(
       finalize(() => {
         fileRef.getMetadata().subscribe(res => {
-          console.log('res :', res);
           this.image.path = res.fullPath;
           this.image.meta = res.customMetadata;
           this.image.uid = res.customMetadata.userId;
